@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Blowfish_IBuy.iml" filepath="$PROJECT_DIR$/Blowfish_IBuy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BlowfishIBuy.iml" filepath="$PROJECT_DIR$/BlowfishIBuy.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
