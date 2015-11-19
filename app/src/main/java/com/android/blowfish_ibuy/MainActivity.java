@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     public void Login(View view){
-        Intent intent = new Intent(this, loginPage.class);
+        Intent intent = new Intent(this, MainPage.class);
         startActivity(intent);
     }
 }
