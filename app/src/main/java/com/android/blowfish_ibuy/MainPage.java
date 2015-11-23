@@ -2,6 +2,7 @@ package com.android.blowfish_ibuy;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.IdRes;
@@ -27,23 +28,34 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.content.Intent;
 import java.io.IOError;
 import android.view.ViewGroup.LayoutParams;
 public class MainPage extends Activity implements OnClickListener {
 
-Button additem;
+    DBAdapter myDb;
+
+
+    Button additem;
     PopupWindow popup;
     LinearLayout mainLayout;
     Button popupButton,exitButton;
     int x,y;
+    EditText type;
+    EditText name;
+    EditText amount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
+        openDB();
+        populateListView();
 
         additem = (Button)findViewById(R.id.addItem);
         additem.setOnClickListener(this);
@@ -52,18 +64,13 @@ Button additem;
         popupinit();
 
 
-
-
-
-
-
     }
     public void init(){
         TextView text = new TextView(this);
         text.setTextColor(Color.parseColor("#ff9359"));
         text.setText("Enter item type");
 
-        EditText type = new EditText(this);
+        type = new EditText(this);
         type.setTextColor(Color.parseColor("#ffffff"));
 
 
@@ -72,14 +79,14 @@ Button additem;
         textname.setText("Enter a name of your item");
 
 
-        EditText name = new EditText(this);
+        name = new EditText(this);
         name.setTextColor(Color.parseColor("#ffffff"));
 
         TextView textAmount = new TextView(this);
         textAmount.setTextColor(Color.parseColor("#ff9359"));
         textAmount.setText("Enter Amount of item");
 
-        EditText amount = new EditText(this);
+        amount = new EditText(this);
         amount.setTextColor(Color.parseColor("#ffffff"));
 
         popupButton = new Button(this);
@@ -132,49 +139,16 @@ Button additem;
                 popup.dismiss();
                 break;
             case 4:
-                popup.dismiss();
+                //Add item
+                if(!TextUtils.isEmpty(type.getText()) && !TextUtils.isEmpty(name.getText()) && !TextUtils.isEmpty(amount.getText())){
+                    myDb.insertRow(type.getText().toString(),name.getText().toString(),amount.getText().toString());
+                    populateListView();
+                    popup.dismiss();
+                }
 
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -207,4 +181,19 @@ Button additem;
         startActivity(intent);
     }
 
+    private void openDB() {
+        myDb = new DBAdapter(this);
+        myDb.open();
+
+    }
+
+    private void populateListView(){
+        Cursor cursor = myDb.getAllRows();
+        String[] fromFieldNames = new String[] {DBAdapter.KEY_ROWID,DBAdapter.KEY_TYPE,DBAdapter.KEY_NAME,DBAdapter.KEY_AMOUNT};
+        int[] toViewIDs = new int[]{R.id.textViewItemID,R.id.textViewItemType,R.id.textViewItemName,R.id.textViewItemAmount};
+        SimpleCursorAdapter myCursorAdapter;
+        myCursorAdapter = new SimpleCursorAdapter(getBaseContext(),R.layout.item_layout,cursor,fromFieldNames,toViewIDs,0);
+        ListView myList = (ListView) findViewById(R.id.listViewItems);
+        myList.setAdapter(myCursorAdapter);
+    }
 }
